@@ -131,7 +131,7 @@ def make_overlapping_kde_plots(df, unit, label):
 
     # set a style
     sns.set(style="darkgrid") #, rc={"axes.facecolor": (0, 0, 0, 0)})
-    sns.set_palette(sns.cubehelix_palette(4, start=2, rot=0, dark=0, light=.95, reverse=True))
+    sns.set_palette(sns.cubehelix_palette(2, start=2, rot=0, dark=0, light=.95, reverse=True))
 
     year_cols = df.columns
     years_int = list(map(int, year_cols))
@@ -153,11 +153,12 @@ def make_overlapping_kde_plots(df, unit, label):
 
         # Make histogram of each year requested (overlapping)
         sns.distplot(df[str(year)],
-                     kde=False,
+                     kde=True,
                      rug=False,
                      bins=bin_edges,
-                     hist_kws={"histtype": "step", "linewidth": 2,
-                               "alpha": 1},
+                     hist_kws={"linewidth": 2,
+                               "alpha": 0.5},
+                                #"histtype": "step",   - for outline only
                      label=year)
                         #"color": colours[nplot]},
     # add a legend

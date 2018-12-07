@@ -36,7 +36,7 @@ variable_selected = 'KYOTOGHGAR4'
 sector_selected = 'CATM0EL'
 
 #desired_years = ['1950', '1960', '1970', '1980', '1990', '2000', '2010']
-desired_years = ['1950', '1970', '1990', '2010']
+desired_years = ['1950', '2010']
 
 
 # =========================

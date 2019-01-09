@@ -21,7 +21,8 @@ import sys
 # =========================
 # Read or load data
 
-current_PRIMAPhist_filename = 'PRIMAP-hist_no_extrapolation_v1.1_06-Mar-2017.csv'
+#current_PRIMAPhist_filename = 'PRIMAP-hist_no_extrapolation_v1.1_06-Mar-2017.csv'
+current_PRIMAPhist_filename = 'PRIMAPHIST20-data-M0EL-KGHG.csv'
 current_socioeconomic_data_filename = ''
 current_population_data_filename = 'UN-population-data-2017.csv'
 
@@ -49,23 +50,26 @@ def read_historic_emissions_data(variable, sector):
     # basic read-in of data
     hist_data = pd.read_csv(file_to_read)
 
-    #columns_available = hist_data.columns
+    # if years labelled as YNNNN, switch to NNNN
+    for col in hist_data.columns:
+        if col.startswith('Y'):
+            hist_data = hist_data.rename(columns={col: col[1:]})
 
     # get specific variable
     years = [y for y in hist_data[hist_data.columns] if (re.match(r"[0-9]{4,7}$", str(y)) is not None)]
     # years_int = list(map(int, years))
 
-    hist_data = hist_data.set_index('country')
+    hist_data = hist_data.set_index('ISO')
 
     # identify the units in the source data
     units = hist_data.loc[(hist_data['entity'] == variable) &
-                          (hist_data['category'] == sector),
+                          (hist_data['sectorCode'] == sector),
                           ['unit']]
     cur_unit = units['unit'].unique()
 
     # extract the requested data
     hist_emis_data = hist_data.loc[(hist_data['entity'] == variable) &
-                                   (hist_data['category'] == sector),
+                                   (hist_data['sectorCode'] == sector),
                                    years]
 
     # TODO - could improve this to preserve more metadata

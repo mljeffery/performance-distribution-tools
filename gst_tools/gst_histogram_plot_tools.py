@@ -113,7 +113,7 @@ def make_histograms_by_years(df, unit, label):
         # Make default histogram of sepal length
         sns.distplot(df[str(year)],
                      kde=False,
-                     rug=True, rug_kws={"color": "rebeccapurple", "alpha": 0.5, "linewidth": 0.5, "height": 0.1},
+                     #rug=True, rug_kws={"color": "rebeccapurple", "alpha": 0.5, "linewidth": 0.5, "height": 0.1},
                      bins=bin_edges,
                      ax=cur_ax)
 
@@ -131,7 +131,7 @@ def make_overlapping_kde_plots(df, unit, label):
 
     # set a style
     sns.set(style="darkgrid") #, rc={"axes.facecolor": (0, 0, 0, 0)})
-    sns.set_palette(sns.cubehelix_palette(2, start=2, rot=0, dark=0, light=.95, reverse=True))
+    #sns.set_palette(sns.cubehelix_palette(2, start=2, rot=0, dark=0, light=.95, reverse=True))
 
     year_cols = df.columns
     years_int = list(map(int, year_cols))
@@ -149,6 +149,20 @@ def make_overlapping_kde_plots(df, unit, label):
 
     for year in year_cols:
 
+#        # Plotting hist without kde
+#        ax = sns.distplot(df[str(year)], bins=bin_edges,
+#                          hist_kws={"linewidth": 2,
+#                          "alpha": 0.5}, kde=False)
+#
+#        # Creating another Y axis
+#        second_ax = ax.twinx()
+#
+#        # Plotting kde without hist on the second Y axis
+#        sns.distplot(df[str(year)], ax=second_ax, kde=True, hist=False)
+#
+#        # Removing Y ticks from the second axis
+#        second_ax.set_yticks([])
+#
         nplot = nplot + 1
 
         # Make histogram of each year requested (overlapping)
@@ -158,14 +172,14 @@ def make_overlapping_kde_plots(df, unit, label):
                      bins=bin_edges,
                      hist_kws={"linewidth": 2,
                                "alpha": 0.5},
-                                #"histtype": "step",   - for outline only
                      label=year)
                         #"color": colours[nplot]},
+#                        #"histtype": "step",   - for outline only
     # add a legend
     plt.legend()
 
     # set xlim - otherwise too quished to read...
-    plt.xlim(right=50, left=0)
+    plt.xlim(right=40, left=0)
 
     # save to file
     outputdir = 'output/plots/'
@@ -173,5 +187,32 @@ def make_overlapping_kde_plots(df, unit, label):
                 format='pdf')
 
 
+# straight up histogram!
+def make_simple_histogram(df, label):
+
+    # set a style
+    sns.set(style="darkgrid")  #, rc={"axes.facecolor": (0, 0, 0, 0)})
+
+    fig, axs = plt.subplots()
+
+    # if bin edges are specified, it's not so easily generalised!
+    # bin_edges = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+    #             11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+    #             21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+    #             35, 40, 45, 50, 55, 60, 100]
+
+    # Make default histogram of sepal length
+    sns.distplot(df, kde=False)
+#                 rug=True)
+                 #rug_kws={"color": "rebeccapurple", "alpha": 0.5, "linewidth": 0.5, "height": 0.1})
+
+    # set xlim - otherwise too squished to read...
+    # plt.xlim(left=0)
+
+    # save to file
+    outputdir = 'output/plots/'
+    plt.savefig((outputdir + 'basic_histogram_' + label + '.pdf'),
+                format='pdf')
+    plt.close()
 
 

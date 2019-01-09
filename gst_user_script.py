@@ -33,10 +33,10 @@ import gst_tools
 
 # TODO - currently works with KGHG but not CO2!
 variable_selected = 'KYOTOGHGAR4'
-sector_selected = 'CATM0EL'
+sector_selected = 'IPCM0EL'
 
 #desired_years = ['1950', '1960', '1970', '1980', '1990', '2000', '2010']
-desired_years = ['1950', '2010']
+desired_years = ['2000', '2015']
 
 
 # =========================
@@ -67,10 +67,12 @@ emis_per_cap = emis_per_cap.dropna(axis=0, how='all')
 # TODO - return list of missing information
 
 
+
+
 # --------------
 # use this data to make some plots
-gst_tools.make_ridge_plot(df_emis, unit_emis, variable_selected)
-gst_tools.make_ridge_plot(emis_per_cap, emis_per_cap_unit, 'Per capita emissions')
+#gst_tools.make_ridge_plot(df_emis, unit_emis, variable_selected)
+#gst_tools.make_ridge_plot(emis_per_cap, emis_per_cap_unit, 'Per capita emissions')
 
 gst_tools.make_histograms_by_years(emis_per_cap[desired_years],
                                    emis_per_cap_unit,

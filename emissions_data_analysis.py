@@ -11,15 +11,11 @@
 # 
 
 # =====================================================
-
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import re
 import gst_tools
-
-# set a style
-sns.set(style="darkgrid")  #, rc={"axes.facecolor": (0, 0, 0, 0)})
 
 # ======================
 # Get data

@@ -25,7 +25,7 @@ import sys
 current_PRIMAPhist_filename = 'PRIMAPHIST20-data-M0EL-KGHG.csv'
 current_socioeconomic_data_filename = ''
 current_population_data_filename = 'UN-population-data-2017.csv'
-
+current_NDC_coverage_data_filename = 'NDCCoverage_InfoPerSectorGasCombiAndCountry.csv'
 
 def read_historic_emissions_data(variable, sector):
 
@@ -128,4 +128,85 @@ def read_historic_population_data():
     print('')
 
     return pop_data, pop_unit
+
+
+def read_NDC_coverage_data(optimistic):
+
+    # optimistic is Boolean to determine if 'no Information' should be interpreted as included or excluded in (I)NDC
+
+    """
+    NDC coverage data was prepared by Annika Gunther based on reading of all NDCs. The original data 
+    format lists all countries in the first column and has a separate column for each possible gas / sector pair. 
+    Each data point is a description of if / how the gas/sector is included in the NDC, with possible entries being: 
+    * Covered           - NDC covers the combination
+    * NotCovered        - not covered by NDC
+    * NoInformation     - NDC does not give sufficient information
+    * NoNDC_NoINDC      - country does not have an (i)NDC
+    * See EU            - countries' emissions covered by the EU
+    * NonUNFCCC         - country is not a Party to the UNFCCC
+
+    This data prep function does the following actions in order to prep the data for making a matrix overview
+    of the sector / gas coverage of NDCs.
+    * rearranges the data to make a multi-index matrix for sectors and gases
+    * removes all nonUNFCCC data
+    * removes all individual EU countries
+    * No NDC -> Not covered
+    * Creates two matrices; one where 'NoInformation' is considered included, and one where it is assumed not included.
+    * In these matrices; the information is converted to a binary True / False summary for easier processing
+
+    The processed data can then be plotted using #TODO
+    """
+
+    print('')
+    print('===========================')
+    print('Reading in NDC coverage data')
+    print('===========================')
+    print('')
+
+    # locate the historic data directory
+    data_folder = 'data/'
+    file_to_read = (data_folder + current_NDC_coverage_data_filename)
+    print('reading files from: ' + file_to_read)
+
+    # basic read-in of data
+    ndc_cov_data = pd.read_csv(file_to_read)
+
+    # make the countries an index
+    ndc_cov_data = ndc_cov_data.set_index('ISO3')
+
+    # trasnpose tp make the countries columns and then make the gas/sector index a column
+    ndc_cov_data = ndc_cov_data.T
+    ndc_cov_data = ndc_cov_data.reset_index()
+
+    # Split sector / gas header into two columns
+    temp = ndc_cov_data["index"].str.split(" ", n=1, expand=True)
+    ndc_cov_data["entity"] = temp[0]
+    ndc_cov_data["sector"] = temp[1]
+    ndc_cov_data.drop(columns=["index"], inplace=True)
+
+    # make the entity and sector columns an index
+#    ndc_cov_data = ndc_cov_data.set_index('entity', 'sector')
+#    ndc_cov_data = ndc_cov_data.drop('index')
+
+    # drop all non-UNFCCC states
+    # TODO - get rid of 'not covered' and 'NonUNFCCC' columns
+    cols = ndc_cov_data.columns
+
+
+    if optimistic == True:
+        # 1. assume 'no information' means included
+        # TODO - True false matrix
+        ndc_coverage = nn
+
+    else:
+
+        # 2. assume 'no information' means not included
+        ndc_coverage = nn
+
+    print('...')
+    print('NDC coverage data reading complete')
+    print('===========================')
+    print('')
+
+    return ndc_coverage
 

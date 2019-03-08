@@ -2,7 +2,6 @@
 # coding: utf-8
 
 # # Summary of data availability under the UNFCCC
-# originally a jupyter notebook, that won't run on my mac
 
 # modules
 
@@ -14,7 +13,7 @@ import re
 # intitialise some general settings
 boldfont = {'fontsize': 13,
             'fontweight': 'bold',
-             'verticalalignment': 'baseline'}
+            'verticalalignment': 'baseline'}
 
 
 # these countries will be used in the same plot - all shown together
@@ -154,7 +153,7 @@ plt.savefig((figname + '.pdf'), format='pdf', dpi=800)
 
 plt.close()
 
-
+# ============================
 # Plot 2 - plot sectors and gases by country...
 
 sns.set(style="darkgrid")

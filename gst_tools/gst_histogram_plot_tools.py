@@ -38,7 +38,8 @@ def make_ridge_plot(data, thisunit, thisvar):
     new_var = (thisvar + ' (' + thisunit + ')')
 
     # get only the years you want for the plot
-    cols_to_get = ['1950', '1970', '1990', '2000', '2010']
+    #cols_to_get = ['1950', '1970', '1990', '2000', '2010']
+    cols_to_get = ['1995', '2000', '2005', '2010', '2015']
     cols_to_drop = list(set(years_available) - set(cols_to_get))
     data = data.drop(cols_to_drop, axis=1)
 
@@ -52,8 +53,8 @@ def make_ridge_plot(data, thisunit, thisvar):
     g = sns.FacetGrid(data, row="years", hue="years", aspect=15, size=0.5, palette=pal)  #height=0.5 - for any seaborn updates...
 
     # Draw the densities in a few steps
-    g.map(sns.kdeplot, new_var, clip=[0, 20], clip_on=True, shade=True, alpha=0.8, lw=1.5, bw=.1)
-    g.map(sns.kdeplot, new_var, clip=[0, 20], clip_on=True, color="k", lw=1, bw=.1)
+    g.map(sns.kdeplot, new_var, clip=[-20, 20], clip_on=True, shade=True, alpha=0.8, lw=1.5, bw=.1)
+    g.map(sns.kdeplot, new_var, clip=[-20, 20], clip_on=True, color="k", lw=1, bw=.1)
     g.map(plt.axhline, y=0, lw=2, clip_on=True)
 
     # Define and use a simple function to label the plot in axes coordinates
@@ -129,6 +130,9 @@ def make_histograms_by_years(df, unit, label):
 
 def make_overlapping_kde_plots(df, unit, label):
 
+    # make sure clean data
+    df = df.dropna(axis='columns')
+
     # set a style
     sns.set(style="darkgrid") #, rc={"axes.facecolor": (0, 0, 0, 0)})
     #sns.set_palette(sns.cubehelix_palette(2, start=2, rot=0, dark=0, light=.95, reverse=True))
@@ -147,6 +151,7 @@ def make_overlapping_kde_plots(df, unit, label):
                  21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
                  35, 40, 45, 50, 55, 60, 100]
 
+
     for year in year_cols:
 
 #        # Plotting hist without kde
@@ -162,7 +167,6 @@ def make_overlapping_kde_plots(df, unit, label):
 #
 #        # Removing Y ticks from the second axis
 #        second_ax.set_yticks([])
-#
         nplot = nplot + 1
 
         # Make histogram of each year requested (overlapping)

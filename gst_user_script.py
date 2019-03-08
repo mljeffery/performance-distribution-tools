@@ -11,7 +11,7 @@
 # This is the main user script for running the different data analyses as part of the
 # Global stocktake assessment toolkit.
 
-# Instructions:
+# Instructions
 
 
 # =========================================================
@@ -67,17 +67,21 @@ emis_per_cap = emis_per_cap.dropna(axis=0, how='all')
 # TODO - return list of missing information
 
 
-
-
 # --------------
 # use this data to make some plots
 #gst_tools.make_ridge_plot(df_emis, unit_emis, variable_selected)
 #gst_tools.make_ridge_plot(emis_per_cap, emis_per_cap_unit, 'Per capita emissions')
 
-gst_tools.make_histograms_by_years(emis_per_cap[desired_years],
-                                   emis_per_cap_unit,
-                                   'Per capita emissions')
-gst_tools.make_overlapping_kde_plots(emis_per_cap[desired_years],
-                                     emis_per_cap_unit,
-                                     'Per capita emissions')
+
+# temp commenting!
+# histograms
+#gst_tools.make_histograms_by_years(emis_per_cap[desired_years],
+#                                   emis_per_cap_unit,
+#                                   'Per capita emissions')
+#gst_tools.make_overlapping_kde_plots(emis_per_cap[desired_years],
+#                                     emis_per_cap_unit,
+#                                     'Per capita emissions')
+
+# averages
+gst_tools.recent_trends_plot(df_emis)
 

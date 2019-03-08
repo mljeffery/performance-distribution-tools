@@ -1,0 +1,14 @@
+historic_data: {
+        'emissions_data': 'PRIMAPHIST20-data-M0EL-KGHG.csv'
+        'population_data': 'UN-population-data-2017.csv'
+        'GDP_data': ''
+        'NDC_coverage_data': 'NDC-coverage-transposed'
+        'UNFCCC_emissions_data': 'maybe? or just be clear from above'
+        }
+projection_data: {
+        'emissions_data': 'PRIMAPHIST20-data-all.csv'
+        'population_data': 'UN-population-data-2017.csv'
+        'GDP_data': ''
+        'NDC_coverage_data': 'NDC-coverage-transposed'
+        'UNFCCC_emissions_data': 'maybe? or just be clear from above'
+        }

@@ -13,19 +13,33 @@
 # Load modules etc.
 
 import re
+import yaml
 
 import pandas as pd
 import seaborn as sns
 import sys
 
+
 # =========================
 # Read or load data
+
+
+yaml_full_filename = '../configuration' + 'data-config.yaml'
+
+print('')
+print('Reading user params from ' + yaml_full_filename)
+print('')
+
+with open(yaml_full_filename, 'rb') as f:
+    data_files_dict = yaml.load(f.read())
+
 
 #current_PRIMAPhist_filename = 'PRIMAP-hist_no_extrapolation_v1.1_06-Mar-2017.csv'
 current_PRIMAPhist_filename = 'PRIMAPHIST20-data-M0EL-KGHG.csv'
 current_socioeconomic_data_filename = ''
 current_population_data_filename = 'UN-population-data-2017.csv'
 current_NDC_coverage_data_filename = 'NDCCoverage_InfoPerSectorGasCombiAndCountry.csv'
+
 
 def read_historic_emissions_data(variable, sector):
 
@@ -44,7 +58,7 @@ def read_historic_emissions_data(variable, sector):
 
     # locate the historic data directory
     data_folder = 'data/'
-    file_to_read = (data_folder + current_PRIMAPhist_filename)
+    file_to_read = (data_folder + data_files_dict['historic_data']['emissions_data'])
     print('reading files from: ' + file_to_read)
 
     # basic read-in of data

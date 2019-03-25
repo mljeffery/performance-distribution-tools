@@ -10,6 +10,11 @@ Last Update: February 2019
 
 ====================================
 
+## set-up and installation
+
+The analysis can all be run using Jupyter notebooks. Jupyter notebooks run in a browser and are easy and convenient ways to run, visualise and document your code. Jupyter notebooks run on all platforms and can be installed following the instructions [here](https://jupyter.org/install). 
+
+
 ## Toolbox Description
 
 ### Data

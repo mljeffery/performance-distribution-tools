@@ -24,14 +24,15 @@ import sys
 # Read or load data
 
 
-yaml_full_filename = '../configuration' + 'data-config.yaml'
+# TODO - delete / remove this part of the setup, now redundant and will let user choose.
+#yaml_full_filename = '../configuration' + 'data-config.yaml'
 
-print('')
-print('Reading user params from ' + yaml_full_filename)
-print('')
+#print('')
+#print('Reading user params from ' + yaml_full_filename)
+#print('')
 
-with open(yaml_full_filename, 'rb') as f:
-    data_files_dict = yaml.load(f.read())
+#with open(yaml_full_filename, 'rb') as f:
+#    data_files_dict = yaml.load(f.read())
 
 
 #current_PRIMAPhist_filename = 'PRIMAP-hist_no_extrapolation_v1.1_06-Mar-2017.csv'

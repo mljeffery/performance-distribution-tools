@@ -53,6 +53,12 @@ def set_countries_as_index(df):
         The function also returns the column headings of the metadata, in case needed.
         """
 
+        # if years labelled as YNNNN, switch to NNNN
+        for col in df.columns:
+            if col.startswith('Y'):
+                if len(col) == 5:
+                    df = df.rename(columns={col: col[1:]})
+
         # get year columns
         year_cols = [y for y in df[df.columns] if (re.match(r"[0-9]{4,7}$", str(y)) is not None)]
 

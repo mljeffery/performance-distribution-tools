@@ -6,13 +6,24 @@ Author: Louise Jeffery
 Contact: louise.jeffery@pik-potsdam.de
 
 Project begin: August, 2018  
-Last Update: February 2019
+Last Update: April, 2019
 
 ====================================
 
 ## set-up and installation
 
 The analysis can all be run using Jupyter notebooks. Jupyter notebooks run in a browser and are easy and convenient ways to run, visualise and document your code. Jupyter notebooks run on all platforms and can be installed following the instructions [here](https://jupyter.org/install). 
+
+Python package requirements:
+
+* python-3
+* pandas
+* numpy
+* matplotlib
+* seaborn
+* re, sys, os
+* countrygroups
+
 
 
 ## Toolbox Description

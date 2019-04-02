@@ -243,3 +243,53 @@ def calculate_diff_since_yearX(df_abs, yearX):
 
     return df_abs_diff, df_perc_diff
 
+
+def verify_data_format(df):
+
+    """
+    To work for the gst_tools, all data read in needs to contain one and only one variable and
+    the unit must be both specified and the same for all variables. The set of countries must be unique.
+    All of these need to be in correctly labelled columns.
+    It's also fairly pointless if there are no years in the data.
+    This function checks for these aspects and tells the user what's wrong if it doesn't work.
+    """
+
+    verified = True
+
+    # First, check for the right columns
+    columns_required = ['variable', 'unit', 'country']
+    column_check = all(elem in df.columns for elem in columns_required)
+    if column_check:
+        verified = True
+    else:
+        print('Missing columns in dataframe! Columns missing are:')
+        print(set(columns_required) - set(list(df.columns)))
+        verified = False
+        return verified
+
+    # check the uniqueness of the data
+    if len(df['variable'].unique()) != 1:
+        print('WARNING: the "variable" is non-unique! Please check your input data!')
+        verified = False
+        return verified
+
+    if len(df['unit'].unique()) != 1:
+        print('WARNING: the "units" are non-unique! Please check your input data!')
+        verified = False
+        return verified
+
+    # check that no countries are repeated
+    if len(df['country'].unique()) != len(df['country']):
+        print('WARNING: Some countries appear to be repeated! Please check your input data!')
+        verified = False
+        return verified
+
+    # make sure that there are some year columns
+    year_cols = [y for y in df[df.columns] if (re.match(r"[0-9]{4,7}$", str(y)) is not None)]
+    if len(year_cols) == 0:
+        print("WARNING: there don't appear to be any year columns! Please check your input data!")
+        verified = False
+        return verified
+
+    # if all the checks are passed, return True
+    return verified

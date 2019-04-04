@@ -110,25 +110,38 @@ def change_first_year(df, new_start_year):
     year_cols = [y for y in df[df.columns] if (re.match(r"[0-9]{4,7}$", str(y)) is not None)]
     other_cols = list(set(df.columns) - set(year_cols))
 
-    # set other columns as index
-    if other_cols:
-        df = df.set_index(other_cols)
-
-    # identify which years to keep
+    # check the current start year
+    cur_start_year = min(year_cols)
     last_year = max(year_cols)
-    print('Last year of data available is ' + str(last_year))
-    years_to_keep = np.arange(new_start_year, (int(last_year) + 1), 1)
-    years_keep_str = list(map(str, years_to_keep))
 
-    # remove extra years
-    df = df.loc[:, years_keep_str]
+    if int(cur_start_year) > new_start_year:
 
-    # return other columns
-    if other_cols:
-        df = df.reset_index()
+        new_start_year = cur_start_year
 
+    else:
+        # set other columns as index
+        if other_cols:
+            df = df.set_index(other_cols)
+
+        # identify which years to keep
+        years_to_keep = np.arange(new_start_year, (int(last_year) + 1), 1)
+        years_keep_str = list(map(str, years_to_keep))
+
+        # remove extra years
+        df = df.loc[:, years_keep_str]
+
+        # return other columns
+        if other_cols:
+            df = df.reset_index()
+
+        # TODO - modify so that the output index is the same as the input!
+
+    # check formatting
     df = check_column_order(df)
-    # TODO - modify so that the output index is the same as the input!
+
+    # tell the user what happened
+    print('First year of data available is now ' + str(new_start_year))
+    print('Last year of data available is ' + str(last_year))
 
     return df
 

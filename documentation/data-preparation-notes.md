@@ -31,3 +31,18 @@ A dependency of countrygrouops is 'shortcountrynames which contains a mapping fo
 [In]  : shortcountrynames.to_name('AFG')
 [Out] : 'Afghanistan'
 ```
+
+
+## EIA
+
+Data from the US' Energy Information Administration is made available for plotting using the global-stocktake-tools. 
+
+Data can be downloaded in a .csv format from the [EIA website](https://www.eia.gov/beta/international/data/browser/#/?pa=004000001000000000000000000000000000000000000000000000000fu&c=ruvvvvvfvtvnvv1urvvvvfvvvvvvfvvvou20evvvvvvvvvnvvuvs&ct=0&vs=INTL.44-1-AFG-QBTU.A&cy=2016&vo=0&v=H&end=2017) as a .csv file. 
+
+To make it easier for the user, we have already performed some pre-processing to put the data in the correct format for the tools provided here. More specifically, we have:
+
+* rearranged the data so that it can be read in with separate energy and sector headings
+* removed the undefined and sparse values for 2017
+* replaced the '--' and '(s)' values in the original data with nan
+* removed some of the commas in the country names so that the data can be stored and read-in automatically as a comma separated file.
+* 

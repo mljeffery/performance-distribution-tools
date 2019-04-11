@@ -26,26 +26,26 @@ from shortcountrynames import to_name
 # ======================
 
 
-def make_simple_histogram(df, variable, unit):
-
-    # set a style
-    sns.set(style="darkgrid")  #, rc={"axes.facecolor": (0, 0, 0, 0)})
-
-    fig, axs = plt.subplots()
-
-    # Make default histogram
-    sns.distplot(df, kde=False)
-                 #rug=True)
-                 #rug_kws={"color": "rebeccapurple", "alpha": 0.5, "linewidth": 0.5, "height": 0.1})
-
-    # set xlim - otherwise too squished to read...
-    # plt.xlim(left=0)
-
-    # save to file
-    outputdir = 'output/plots/'
-    plt.savefig((outputdir + 'basic_histogram_' + label + '.pdf'),
-                format='pdf')
-    plt.close()
+# def make_simple_histogram(df, variable, unit):
+#
+#     # set a style
+#     sns.set(style="darkgrid")  #, rc={"axes.facecolor": (0, 0, 0, 0)})
+#
+#     fig, axs = plt.subplots()
+#
+#     # Make default histogram
+#     sns.distplot(df, kde=False)
+#                  #rug=True)
+#                  #rug_kws={"color": "rebeccapurple", "alpha": 0.5, "linewidth": 0.5, "height": 0.1})
+#
+#     # set xlim - otherwise too squished to read...
+#     # plt.xlim(left=0)
+#
+#     # save to file
+#     outputdir = 'output/plots/'
+#     plt.savefig((outputdir + 'basic_histogram_' + label + '.pdf'),
+#                 format='pdf')
+#     plt.close()
 
 
 # main plotting function used throughout - flexibility given so that it can cope with a range of different input!
@@ -164,7 +164,7 @@ def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=
     # make histogram
     sns.distplot(df, kde=False,
                  bins=bins_calc,
-                 rug=True,
+                 rug=False,
                  color='mediumseagreen',
                  rug_kws={"color": "rebeccapurple", "alpha": 0.7, "linewidth": 0.4, "height": 0.03})
 
@@ -194,9 +194,6 @@ def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=
     axs.set_ylabel('Number of countries')
     axs.set_title((var + ' in ' + df.name), fontweight='bold')
 
-    # show the plot
-    plt.show()
-
     # save to file
     if save_plot:
         filepath = os.path.join('output', 'plots')
@@ -204,8 +201,11 @@ def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=
         if not os.path.exists(filepath):
             os.makedirs(filepath)
         filename = os.path.join(filepath, fname)
-        plt.savefig(filename, format='pdf')
+        plt.savefig(filename, format='pdf', bbox_inches='tight')
         plt.close()
+
+    # show the plot
+    plt.show()
 
 
 def make_histogram_peaking(df, var, unit_, start_year, end_year, save_plot=False):
@@ -283,18 +283,18 @@ def make_histogram_peaking(df, var, unit_, start_year, end_year, save_plot=False
     axs.set_ylabel('Number of countries')
     axs.set_title(('Peaking year of ' + var + ' since ' + str(start_year)), fontweight='bold')
 
-    # show the plot
-    plt.show()
-
     # save to file
     if save_plot:
         filepath = os.path.join('output', 'plots')
-        fname = ('basic_histogram-' + var + '.pdf')
+        fname = ('basic_histogram-' + var + '-peaking-since' + str(start_year) + '.pdf')
         if not os.path.exists(filepath):
             os.makedirs(filepath)
         filename = os.path.join(filepath, fname)
         plt.savefig(filename, format='pdf')
         plt.close()
+
+    # show the plot
+    plt.show()
 
 
 def plot_facet_grid_countries(df, variable, value, main_title='', plot_name='', save_plot=False):

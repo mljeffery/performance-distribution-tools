@@ -50,7 +50,7 @@ from shortcountrynames import to_name
 
 # main plotting function used throughout - flexibility given so that it can cope with a range of different input!
 
-def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=3):
+def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=3, selected_country=''):
 
     """
     This is based on the make_simple_histogram function but caters to data that
@@ -67,6 +67,8 @@ def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=
     removed.
 
     TODO - 'df' is actually a series -> better name?
+
+    TODO - edit selected country option to deal with ISO codes or names.
     """
 
     # Check the data - needs to not be, for example, all zeros
@@ -75,6 +77,11 @@ def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=
         print('All values in the series are the same! Exiting plotting routine for ' + str(var))
         print('---------')
         return
+
+    # get the value here in case it's excluded as an outlier
+    if selected_country:
+        # get value of that country
+        country_value = df[selected_country]
 
     # set a style
     sns.set(style="darkgrid")
@@ -162,16 +169,20 @@ def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=
     fig, axs = plt.subplots()
 
     # make histogram
-    sns.distplot(df, kde=False,
+    sns.distplot(df,
+                 kde=False,
                  bins=bins_calc,
-                 rug=False,
                  color='mediumseagreen',
+                 rug=False,
                  rug_kws={"color": "rebeccapurple", "alpha": 0.7, "linewidth": 0.4, "height": 0.03})
+
+    # get xlims
+    xmin, xmax = axs.get_xlim()
 
     # Dynamically set x axis range to make symmetric abut 0
     if minimum < 0:
-        # get and reset xmin or xmax
-        xmin, xmax = axs.get_xlim()
+
+        # reset xmin or xmax
         if np.absolute(xmax) > np.absolute(xmin):
             plt.xlim(-xmax, xmax)
         else:
@@ -180,14 +191,61 @@ def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=
         # and add a line at 0
         axs.axvline(linewidth=1, color='k')
 
+        # and annotate with the number of countries either side of the line
+        nbelow = len(df[df < 0])
+        nabove = len(df[df > 0])
+
+        axs.annotate(str(nbelow),
+                     xytext=(0.42, 0.95), xycoords=axs.transAxes,
+                     fontsize=9, color='black',
+                     xy=(0.3, 0.95),
+                     arrowprops=dict(arrowstyle="-|>", color='black'),
+                     bbox=dict(facecolor='white', alpha=0.75)
+                     )
+        axs.annotate(str(nabove),
+                     xytext=(0.55, 0.95), xycoords=axs.transAxes,
+                     fontsize=9, color='black',
+                     xy=(0.7, 0.95),
+                     arrowprops=dict(arrowstyle="-|>", color='black'),
+                     bbox=dict(facecolor='white', alpha=0.75)
+                     )
+
+    # If a country is selected for highlighting, then indicate it on the plot!
+    if selected_country:
+
+        # get value of that country
+        # country_value = df[selected_country]
+
+        if (country_value > xmin) & (country_value < xmax):
+            # indicate it on the plot
+            axs.axvline(x=country_value, ymax=0.9, linewidth=1.5, color='rebeccapurple')
+
+            # annotate with country name
+            ymin, ymax = axs.get_ylim()
+            ypos = 0.65 * ymax
+            axs.annotate((to_name(selected_country) + ' ' + "{:.2g}".format(country_value)),
+                         xy=(country_value, ypos), xycoords='data',
+                         fontsize=9, color='rebeccapurple',
+                         bbox=dict(facecolor='white', edgecolor='rebeccapurple', alpha=0.75)
+                         )
+
+        else:
+            axs.annotate((to_name(selected_country) + ' ' + "{:.2g}".format(country_value)),
+                         xy=(.75, .65), xycoords=axs.transAxes,
+                         fontsize=9, color='rebeccapurple',
+                         bbox=dict(facecolor='white', edgecolor='rebeccapurple', alpha=0.75)
+                         )
+
     # Annotate the plot with stats
     axs.annotate((" max = {:.2f}".format(maximum) +
                   "\n min = {:.2f}".format(minimum) +
                   "\n mean = {:.2f}".format(mean) +
-                  "\n median = {:.2f}".format(median)),
+                  "\n median = {:.2f}".format(median) +
+                  "\n n = {:.0f}".format(npts)
+                  ),
                  xy=(.75, 0.75), xycoords=axs.transAxes,
                  fontsize=9, color='black',
-                 bbox=dict(facecolor='white', alpha=0.75))
+                 bbox=dict(facecolor='white', edgecolor='grey', alpha=0.75))
 
     # label axes and add title
     axs.set_xlabel((var + ' (' + unit_ + ')'))
@@ -197,7 +255,10 @@ def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=
     # save to file
     if save_plot:
         filepath = os.path.join('output', 'plots')
-        fname = ('basic_histogram-' + var + '.pdf')
+        if selected_country:
+            fname = ('basic_histogram-' + var + '-' + to_name(selected_country) + '.pdf')
+        else:
+            fname = ('basic_histogram-' + var + '.pdf')
         if not os.path.exists(filepath):
             os.makedirs(filepath)
         filename = os.path.join(filepath, fname)

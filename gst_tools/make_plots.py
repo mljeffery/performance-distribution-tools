@@ -121,6 +121,8 @@ def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=
         print(upper_outliers)
         print('---')
 
+        noutliers = len(lower_outliers) + len(upper_outliers)
+
         # actually remove the outliers
         df = df[(df > tukey_min) & (df < tukey_max)]
 
@@ -198,16 +200,16 @@ def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=
         axs.annotate(str(nbelow),
                      xytext=(0.42, 0.95), xycoords=axs.transAxes,
                      fontsize=9, color='black',
-                     xy=(0.3, 0.95),
+                     xy=(0.3, 0.96),
                      arrowprops=dict(arrowstyle="-|>", color='black'),
-                     bbox=dict(facecolor='white', alpha=0.75)
+                     bbox=dict(facecolor='white', edgecolor='grey', alpha=0.75)
                      )
         axs.annotate(str(nabove),
                      xytext=(0.55, 0.95), xycoords=axs.transAxes,
                      fontsize=9, color='black',
-                     xy=(0.7, 0.95),
+                     xy=(0.7, 0.96),
                      arrowprops=dict(arrowstyle="-|>", color='black'),
-                     bbox=dict(facecolor='white', alpha=0.75)
+                     bbox=dict(facecolor='white', edgecolor='grey', alpha=0.75)
                      )
 
     # If a country is selected for highlighting, then indicate it on the plot!
@@ -223,14 +225,14 @@ def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=
             # annotate with country name
             ymin, ymax = axs.get_ylim()
             ypos = 0.65 * ymax
-            axs.annotate((to_name(selected_country) + ' ' + "{:.2g}".format(country_value)),
+            axs.annotate((to_name(selected_country) + ' ' + "\n{:.2g}".format(country_value)) + unit_,
                          xy=(country_value, ypos), xycoords='data',
                          fontsize=9, color='rebeccapurple',
                          bbox=dict(facecolor='white', edgecolor='rebeccapurple', alpha=0.75)
                          )
 
         else:
-            axs.annotate((to_name(selected_country) + ' ' + "{:.2g}".format(country_value)),
+            axs.annotate((to_name(selected_country) + ' ' + "\n{:.2g}".format(country_value)) + unit_,
                          xy=(.75, .65), xycoords=axs.transAxes,
                          fontsize=9, color='rebeccapurple',
                          bbox=dict(facecolor='white', edgecolor='rebeccapurple', alpha=0.75)
@@ -247,9 +249,15 @@ def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=
                  fontsize=9, color='black',
                  bbox=dict(facecolor='white', edgecolor='grey', alpha=0.75))
 
+    # if some countries were removed, indicate on the plot
+    if remove_outliers:
+        axs.annotate((str(noutliers) + ' outliers not shown.'),
+                     xy=(0.75, 1.01), xycoords=axs.transAxes,
+                     fontsize=8, color='black')
+
     # label axes and add title
-    axs.set_xlabel((var + ' (' + unit_ + ')'))
-    axs.set_ylabel('Number of countries')
+    axs.set_xlabel((var + ' (' + unit_ + ')'), fontsize=10)
+    axs.set_ylabel('Number of countries', fontsize=10)
     axs.set_title((var + ' in ' + df.name), fontweight='bold')
 
     # save to file

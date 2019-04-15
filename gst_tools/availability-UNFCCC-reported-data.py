@@ -34,17 +34,17 @@ countries_of_interest = ['EU', 'China', 'India', 'Mexico', 'Viet nam', 'Ethiopia
 # Get data
 
 # select data to read in -
-#datafile = "UNFCCC2006data.csv"
-#dataSource = 'UNFCCCC2006'
+datafile = "UNFCCC2006data.csv"
+dataSource = 'UNFCCCC2006'
 
 #datafile = "UNFCCC1996DATAdata.csv"
 #dataSource = 'UNFCCC1996'
 
-datafile ='PRIMAPHIST20-data-all.csv'
-dataSource = 'PRIMAPhist'
+#datafile ='PRIMAPHIST20-data-all.csv'
+#dataSource = 'PRIMAPhist'
 
 # actually read the data
-data = pd.read_csv('../data/' + datafile)
+data = pd.read_csv('data/' + datafile)
 
 # set here the order that we want the sectors to be plotted in
 if dataSource == 'UNFCCC1996':

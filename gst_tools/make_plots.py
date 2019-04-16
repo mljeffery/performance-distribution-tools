@@ -339,13 +339,12 @@ def make_histogram_peaking(df, var, unit_, start_year, end_year, save_plot=False
         axs.axvline(linewidth=1, color='k')
 
     # Annotate the plot with stats
-    axs.annotate((" max = {:.0f}".format(maximum) +
-                  "\n min = {:.0f}".format(minimum) +
-                  "\n mean = {:.2f}".format(mean) +
+    axs.annotate((" {:.0f} countries".format(npts) +
+                  "\n mean   = {:.0f}".format(mean) +
                   "\n median = {:.0f}".format(median)),
-                 xy=(1.03, 0.75), xycoords=axs.transAxes,
+                 xy=(0.03, 0.8), xycoords=axs.transAxes,
                  fontsize=9, color='black',
-                 bbox=dict(facecolor='white', alpha=0.75))
+                 bbox=dict(facecolor='white', edgecolor='grey', alpha=0.75))
 
     # label axes and add title
     axs.set_xlabel('Year')
@@ -355,7 +354,7 @@ def make_histogram_peaking(df, var, unit_, start_year, end_year, save_plot=False
     # save to file
     if save_plot:
         filepath = os.path.join('output', 'plots')
-        fname = ('basic_histogram-' + var + '-peaking-since' + str(start_year) + '.pdf')
+        fname = ('basic_histogram-peaking-since-' + str(start_year) + '-' + var + '.pdf')
         if not os.path.exists(filepath):
             os.makedirs(filepath)
         filename = os.path.join(filepath, fname)

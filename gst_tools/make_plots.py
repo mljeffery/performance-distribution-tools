@@ -50,7 +50,11 @@ from shortcountrynames import to_name
 
 # main plotting function used throughout - flexibility given so that it can cope with a range of different input!
 
-def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=3, selected_country=''):
+def make_histogram(df, unit_,
+                   xlabel='', title='', sourcename='unspecified',
+                   remove_outliers=False, ktuk=3,
+                   save_plot=False, plot_name='',
+                   selected_country=''):
 
     """
     This is based on the make_simple_histogram function but caters to data that
@@ -74,7 +78,7 @@ def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=
     # Check the data - needs to not be, for example, all zeros
     if len(df.unique()) == 1:
         print('---------')
-        print('All values in the series are the same! Exiting plotting routine for ' + str(var))
+        print('All values in the series are the same! Exiting plotting routine for ' + str(plot_name))
         print('---------')
         return
 
@@ -106,8 +110,8 @@ def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=
         # calculate limits
         q75, q25 = np.percentile(df, [75, 25])
         iqr = q75 - q25
-        tukey_min = q25 - kTuk * iqr
-        tukey_max = q75 + kTuk * iqr
+        tukey_min = q25 - ktuk * iqr
+        tukey_max = q75 + ktuk * iqr
         # for testing:
         # print('tukey_min is ' + str(tukey_min))
         # print('tukey_max is ' + str(tukey_max))
@@ -194,20 +198,22 @@ def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=
         axs.axvline(linewidth=1, color='k')
 
         # and annotate with the number of countries either side of the line
+        # ARROWS!
+
         nbelow = len(df[df < 0])
         nabove = len(df[df > 0])
 
         axs.annotate(str(nbelow),
-                     xytext=(0.42, 0.95), xycoords=axs.transAxes,
+                     xytext=(0.42, 1.0), xycoords=axs.transAxes,
                      fontsize=9, color='black',
-                     xy=(0.3, 0.96),
+                     xy=(0.3, 1.01),
                      arrowprops=dict(arrowstyle="-|>", color='black'),
                      bbox=dict(facecolor='white', edgecolor='grey', alpha=0.75)
                      )
         axs.annotate(str(nabove),
-                     xytext=(0.55, 0.95), xycoords=axs.transAxes,
+                     xytext=(0.55, 1.0), xycoords=axs.transAxes,
                      fontsize=9, color='black',
-                     xy=(0.7, 0.96),
+                     xy=(0.7, 1.01),
                      arrowprops=dict(arrowstyle="-|>", color='black'),
                      bbox=dict(facecolor='white', edgecolor='grey', alpha=0.75)
                      )
@@ -239,38 +245,39 @@ def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=
                          )
 
     # Annotate the plot with stats
-    axs.annotate((" max = {:.2f}".format(maximum) +
-                  "\n min = {:.2f}".format(minimum) +
-                  "\n mean = {:.2f}".format(mean) +
-                  "\n median = {:.2f}".format(median) +
-                  "\n n = {:.0f}".format(npts)
+    axs.annotate((" data source: " + sourcename + "\n"
+                  "\n maximum  = {:.2f}".format(maximum) +
+                  "\n minimum   = {:.2f}".format(minimum) +
+                  "\n mean        = {:.2f}".format(mean) +
+                  "\n median     = {:.2f}".format(median) +
+                  "\n number of \n countries  = {:.0f}".format(npts)
                   ),
-                 xy=(.75, 0.75), xycoords=axs.transAxes,
+                 xy=(1.05, 0.6), xycoords=axs.transAxes,
                  fontsize=9, color='black',
                  bbox=dict(facecolor='white', edgecolor='grey', alpha=0.75))
 
     # if some countries were removed, indicate on the plot
     if remove_outliers:
-        axs.annotate((str(noutliers) + ' outliers not shown.'),
-                     xy=(0.75, 1.01), xycoords=axs.transAxes,
+        axs.annotate(('  ' + str(noutliers) + ' outliers not shown'),
+                     xy=(1.12, 0.53), xycoords=axs.transAxes,
                      fontsize=8, color='black')
 
     # label axes and add title
-    axs.set_xlabel((var + ' (' + unit_ + ')'), fontsize=10)
-    axs.set_ylabel('Number of countries', fontsize=10)
-    axs.set_title((var + ' in ' + df.name), fontweight='bold')
+    axs.set_xlabel((xlabel + ' (' + unit_ + ')'), fontsize=12)
+    axs.set_ylabel('number of countries', fontsize=12)
+    axs.set_title((title + "\n"), fontweight='bold')
 
     # save to file
     if save_plot:
         filepath = os.path.join('output', 'plots')
         if selected_country:
-            fname = ('basic_histogram-' + var + '-' + to_name(selected_country) + '.pdf')
+            fname = ('basic_histogram-' + plot_name + '-' + to_name(selected_country) + '.png')
         else:
-            fname = ('basic_histogram-' + var + '.pdf')
+            fname = ('basic_histogram-' + plot_name + '.png')
         if not os.path.exists(filepath):
             os.makedirs(filepath)
         filename = os.path.join(filepath, fname)
-        plt.savefig(filename, format='pdf', bbox_inches='tight')
+        plt.savefig(filename, format='png', dpi=600, bbox_inches='tight')
         plt.close()
 
     # show the plot
@@ -278,17 +285,10 @@ def make_histogram(df, var, unit_, remove_outliers=False, save_plot=False, kTuk=
 
 
 def make_histogram_peaking(df, var, unit_, start_year, end_year, save_plot=False):
+
     """
-    This is based on the make_simple_histogram function but caters to data that
-    contains both positive and negative values. For the GST, it's important to be
-    able to see whether or not trends etc. are positive or negative and a symmetric
-    binning approach is needed.
-
-    To calculate the bin sizes, we use a couple of conditional rules based on the data
-    available, including the max and min of the data and the number of data points.
-    For most plots we are expecting around 200 countries, but could also be a few regions.
-
-    TODO - 'df' is actually a series -> better name?
+    This function is specifically written to plot the peaking year of a variable for a range
+    of countries.
     """
 
     # Check the data - needs to not be, for example, all zeros
@@ -319,12 +319,26 @@ def make_histogram_peaking(df, var, unit_, start_year, end_year, save_plot=False
     # set up the figure
     fig, axs = plt.subplots()
 
+    # UBA dict from Annika Guenther
+    uba_colours = {}
+    uba_colours['uba_dark_green'] = [xx / 255 for xx in (0, 118, 38)]
+    uba_colours['uba_bright_green'] = [xx / 255 for xx in (97, 185, 49)]
+    uba_colours['uba_bright_blue'] = [xx / 255 for xx in (0, 155, 213)]
+    uba_colours['uba_dark_blue'] = [xx / 255 for xx in (18, 93, 134)]
+    uba_colours['uba_bright_orange'] = [xx / 255 for xx in (250, 187, 0)]
+    uba_colours['uba_dark_pink'] = [xx / 255 for xx in (131, 5, 60)]
+    uba_colours['uba_bright_pink'] = [xx / 255 for xx in (206, 31, 94)]
+    uba_colours['uba_dark_orange'] = [xx / 255 for xx in (215, 132, 0)]
+    uba_colours['uba_bright_purple'] = [xx / 255 for xx in (157, 87, 154)]
+    uba_colours['uba_dark_purple'] = [xx / 255 for xx in (98, 47, 99)]
+
     # make histogram
-    sns.distplot(df, kde=False,
-                 bins=bins_calc,
-                 rug=False,  # with bins fixed at annual, the rugs aren't additional
-                 color='mediumseagreen',
-                 rug_kws={"color": "rebeccapurple", "alpha": 0.7, "linewidth": 0.4, "height": 0.03})
+    N, bins, patches = axs.hist(df, bins=bins_calc,
+                                edgecolor='white', linewidth=1)
+
+    for i in range(0, len(patches)):
+        patches[i].set_facecolor(uba_colours['uba_dark_purple'])
+    patches[-1].set_facecolor(uba_colours['uba_bright_orange'])
 
     # Dynamically set x axis range to make symmetric abut 0
     if minimum < 0:
@@ -338,27 +352,30 @@ def make_histogram_peaking(df, var, unit_, start_year, end_year, save_plot=False
         # and add a line at 0
         axs.axvline(linewidth=1, color='k')
 
+    # number of countries in the last bin
+    nlast = N[-1]
+
     # Annotate the plot with stats
-    axs.annotate((" {:.0f} countries".format(npts) +
-                  "\n mean   = {:.0f}".format(mean) +
-                  "\n median = {:.0f}".format(median)),
-                 xy=(0.03, 0.8), xycoords=axs.transAxes,
-                 fontsize=9, color='black',
+    axs.annotate(("{:.0f} countries, ".format(npts) +
+                  "\nof which {:.0f} have ".format(nlast) +
+                  "\nnot yet peaked (orange)"),
+                 xy=(0.03, 0.82), xycoords=axs.transAxes,
+                 fontsize=10, color='black',
                  bbox=dict(facecolor='white', edgecolor='grey', alpha=0.75))
 
     # label axes and add title
     axs.set_xlabel('Year')
     axs.set_ylabel('Number of countries')
-    axs.set_title(('Peaking year of ' + var + ' since ' + str(start_year)), fontweight='bold')
+    axs.set_title(('Year when ' + var + ' peaked'), fontweight='bold')
 
     # save to file
     if save_plot:
         filepath = os.path.join('output', 'plots')
-        fname = ('basic_histogram-peaking-since-' + str(start_year) + '-' + var + '.pdf')
+        fname = ('basic_histogram-peaking-since-' + str(start_year) + '-' + var + '.png')
         if not os.path.exists(filepath):
             os.makedirs(filepath)
         filename = os.path.join(filepath, fname)
-        plt.savefig(filename, format='pdf')
+        plt.savefig(filename, format='png', dpi=450, bbox_inches='tight')
         plt.close()
 
     # show the plot
@@ -366,6 +383,12 @@ def make_histogram_peaking(df, var, unit_, start_year, end_year, save_plot=False
 
 
 def plot_facet_grid_countries(df, variable, value, main_title='', plot_name='', save_plot=False):
+
+    """
+    plot a facet grid of variables for a range of countries. Can be used to, e.g. assess
+    which countries have emissions that have peaked, and which not.
+    """
+
     # First, get some idea of the data so that it's easier to make clean plots
     ranges = df.max(axis=1) - df.min(axis=1)
     check = (ranges.max() - ranges.min()) / ranges.min()

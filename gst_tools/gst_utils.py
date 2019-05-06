@@ -306,3 +306,26 @@ def verify_data_format(df):
 
     # if all the checks are passed, return True
     return verified
+
+
+def make_uba_color_dict():
+
+    """
+    Define a dict with the UBA colours contained so it can be used for the plots.
+    """
+
+    # Thank you to Annika Guenther for the numbers!
+
+    uba_colours = dict
+    uba_colours['uba_green'] = [xx / 255 for xx in (0, 118, 38)]  # 'darkgreen'
+    uba_colours['uba_2'] = [xx / 255 for xx in (97, 185, 49)]  # 'mediumspringgreen'
+    uba_colours['uba_3'] = [xx / 255 for xx in (0, 155, 213)]  # 'dodgerblue'
+    uba_colours['uba_4'] = [xx / 255 for xx in (18, 93, 134)]  # 'navy'
+    uba_colours['uba_5'] = [xx / 255 for xx in (250, 187, 0)]  # 'deeppink'
+    uba_colours['uba_6'] = [xx / 255 for xx in (131, 5, 60)]  # 'orange'
+    uba_colours['uba_7'] = [xx / 255 for xx in (206, 31, 94)]  # 'purple'
+    uba_colours['uba_8'] = [xx / 255 for xx in (215, 132, 0)]  # 'magenta'
+    uba_colours['uba_9'] = [xx / 255 for xx in (157, 87, 154)]  # 'magenta'
+    uba_colours['uba_10'] = [xx / 255 for xx in (98, 47, 99)]  # 'magenta'
+
+    return uba_colours

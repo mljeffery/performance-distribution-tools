@@ -26,26 +26,23 @@ from shortcountrynames import to_name
 # ======================
 
 
-# def make_simple_histogram(df, variable, unit):
-#
-#     # set a style
-#     sns.set(style="darkgrid")  #, rc={"axes.facecolor": (0, 0, 0, 0)})
-#
-#     fig, axs = plt.subplots()
-#
-#     # Make default histogram
-#     sns.distplot(df, kde=False)
-#                  #rug=True)
-#                  #rug_kws={"color": "rebeccapurple", "alpha": 0.5, "linewidth": 0.5, "height": 0.1})
-#
-#     # set xlim - otherwise too squished to read...
-#     # plt.xlim(left=0)
-#
-#     # save to file
-#     outputdir = 'output/plots/'
-#     plt.savefig((outputdir + 'basic_histogram_' + label + '.pdf'),
-#                 format='pdf')
-#     plt.close()
+# UBA colour scheme for all functions
+def get_uba_colours():
+
+    # UBA dict from Annika Guenther
+    uba_colours = {}
+    uba_colours['uba_dark_green'] = [xx / 255 for xx in (0, 118, 38)]
+    uba_colours['uba_bright_green'] = [xx / 255 for xx in (97, 185, 49)]
+    uba_colours['uba_bright_blue'] = [xx / 255 for xx in (0, 155, 213)]
+    uba_colours['uba_dark_blue'] = [xx / 255 for xx in (18, 93, 134)]
+    uba_colours['uba_bright_orange'] = [xx / 255 for xx in (250, 187, 0)]
+    uba_colours['uba_dark_pink'] = [xx / 255 for xx in (131, 5, 60)]
+    uba_colours['uba_bright_pink'] = [xx / 255 for xx in (206, 31, 94)]
+    uba_colours['uba_dark_orange'] = [xx / 255 for xx in (215, 132, 0)]
+    uba_colours['uba_bright_purple'] = [xx / 255 for xx in (157, 87, 154)]
+    uba_colours['uba_dark_purple'] = [xx / 255 for xx in (98, 47, 99)]
+
+    return uba_colours
 
 
 # main plotting function used throughout - flexibility given so that it can cope with a range of different input!
@@ -319,18 +316,7 @@ def make_histogram_peaking(df, var, unit_, start_year, end_year, save_plot=False
     # set up the figure
     fig, axs = plt.subplots()
 
-    # UBA dict from Annika Guenther
-    uba_colours = {}
-    uba_colours['uba_dark_green'] = [xx / 255 for xx in (0, 118, 38)]
-    uba_colours['uba_bright_green'] = [xx / 255 for xx in (97, 185, 49)]
-    uba_colours['uba_bright_blue'] = [xx / 255 for xx in (0, 155, 213)]
-    uba_colours['uba_dark_blue'] = [xx / 255 for xx in (18, 93, 134)]
-    uba_colours['uba_bright_orange'] = [xx / 255 for xx in (250, 187, 0)]
-    uba_colours['uba_dark_pink'] = [xx / 255 for xx in (131, 5, 60)]
-    uba_colours['uba_bright_pink'] = [xx / 255 for xx in (206, 31, 94)]
-    uba_colours['uba_dark_orange'] = [xx / 255 for xx in (215, 132, 0)]
-    uba_colours['uba_bright_purple'] = [xx / 255 for xx in (157, 87, 154)]
-    uba_colours['uba_dark_purple'] = [xx / 255 for xx in (98, 47, 99)]
+    uba_colours = get_uba_colours()
 
     # make histogram
     N, bins, patches = axs.hist(df, bins=bins_calc,
@@ -339,6 +325,7 @@ def make_histogram_peaking(df, var, unit_, start_year, end_year, save_plot=False
     for i in range(0, len(patches)):
         patches[i].set_facecolor(uba_colours['uba_dark_purple'])
     patches[-1].set_facecolor(uba_colours['uba_bright_orange'])
+    patches[-1].set_alpha(0.4)
 
     # Dynamically set x axis range to make symmetric abut 0
     if minimum < 0:

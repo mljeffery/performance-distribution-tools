@@ -45,6 +45,23 @@ def get_uba_colours():
     return uba_colours
 
 
+def set_uba_palette():
+
+    uba_palette = [
+                [xx / 255 for xx in (0, 118, 38)],
+                [xx / 255 for xx in (18, 93, 134)],
+                [xx / 255 for xx in (98, 47, 99)],
+                [xx / 255 for xx in (215, 132, 0)],
+                [xx / 255 for xx in (131, 5, 60)],
+                [xx / 255 for xx in (97, 185, 49)],
+                [xx / 255 for xx in (0, 155, 213)],
+                [xx / 255 for xx in (157, 87, 154)],
+                [xx / 255 for xx in (250, 187, 0)],
+                [xx / 255 for xx in (206, 31, 94)]
+                  ]
+
+    return uba_palette
+
 # main plotting function used throughout - flexibility given so that it can cope with a range of different input!
 
 def make_histogram(df, unit_,
@@ -86,6 +103,7 @@ def make_histogram(df, unit_,
 
     # set a style
     sns.set(style="darkgrid")
+    sns.set_palette(set_uba_palette())
 
     if remove_outliers:
         # Outliers - in some cases, the date contains extreme outliers. These make for an unreadable
@@ -161,9 +179,24 @@ def make_histogram(df, unit_,
         print('bins set to ' + str(bins_calc))
 
     else:
-        # use inbuilt Freedman-Diaconis
-        # ? TODO - modify to ensure integers? or replicate above?
-        bins_calc = 'fd'
+        if maximum < 25:
+
+            bin_width = 1
+
+            # or the simple 'excel' rule:
+            # bin_width = int(full_range / np.ceil(npts**(0.5)))
+
+            # for nbins, need to take into account asymmetric distribution around 0
+            nbins = np.ceil(abs(maximum))
+
+            # determine bin edges
+            bins_calc = range(0, int(1 + nbins), bin_width)
+            print('bins set to ' + str(bins_calc))
+
+        else:
+            # use inbuilt Freedman-Diaconis
+            # ? TODO - modify to ensure integers? or replicate above?
+            bins_calc = 'fd'
 
     # --------------
     # MAKE THE PLOT
@@ -174,10 +207,10 @@ def make_histogram(df, unit_,
     # make histogram
     sns.distplot(df,
                  kde=False,
-                 bins=bins_calc,
-                 color='mediumseagreen',
-                 rug=False,
-                 rug_kws={"color": "rebeccapurple", "alpha": 0.7, "linewidth": 0.4, "height": 0.03})
+                 bins=bins_calc)
+                 #color='mediumseagreen',
+                 #rug=False,
+                 #rug_kws={"color": "rebeccapurple", "alpha": 0.7, "linewidth": 0.4, "height": 0.03})
 
     # get xlims
     xmin, xmax = axs.get_xlim()
@@ -242,7 +275,7 @@ def make_histogram(df, unit_,
                          )
 
     # Annotate the plot with stats
-    axs.annotate((" data source: " + sourcename + "\n"
+    axs.annotate(("Data source: \n " + sourcename + "\n"
                   "\n maximum  = {:.2f}".format(maximum) +
                   "\n minimum   = {:.2f}".format(minimum) +
                   "\n mean        = {:.2f}".format(mean) +
@@ -256,7 +289,7 @@ def make_histogram(df, unit_,
     # if some countries were removed, indicate on the plot
     if remove_outliers:
         axs.annotate(('  ' + str(noutliers) + ' outliers not shown'),
-                     xy=(1.12, 0.53), xycoords=axs.transAxes,
+                     xy=(1.05, 0.53), xycoords=axs.transAxes,
                      fontsize=8, color='black')
 
     # label axes and add title
@@ -345,15 +378,15 @@ def make_histogram_peaking(df, var, unit_, start_year, end_year, save_plot=False
     # Annotate the plot with stats
     axs.annotate(("{:.0f} countries, ".format(npts) +
                   "\nof which {:.0f} have ".format(nlast) +
-                  "\nnot yet peaked (orange)"),
+                  "\nnot yet reached a maximum (orange)"),
                  xy=(0.03, 0.82), xycoords=axs.transAxes,
                  fontsize=10, color='black',
                  bbox=dict(facecolor='white', edgecolor='grey', alpha=0.75))
 
     # label axes and add title
-    axs.set_xlabel('Year')
-    axs.set_ylabel('Number of countries')
-    axs.set_title(('Year when ' + var + ' peaked'), fontweight='bold')
+    axs.set_xlabel('year')
+    axs.set_ylabel('number of countries')
+    axs.set_title(('year when ' + var + ' peaked'), fontweight='bold')
 
     # save to file
     if save_plot:
@@ -421,5 +454,38 @@ def plot_facet_grid_countries(df, variable, value, main_title='', plot_name='', 
         if not os.path.exists(filepath):
             os.makedirs(filepath)
         filename = os.path.join(filepath, fname)
-        plt.savefig(filename, format='pdf')
+        plt.savefig(filename, format='pdf', bbox_inches='tight')
         plt.close()
+
+
+def peaking_barplot(summary_data, variable, save_plot=False):
+
+    uba_palette = set_uba_palette()
+    sns.set_palette(uba_palette)
+    sns.set(style="darkgrid", context="paper")
+
+    # make histogram
+    fig, ax = plt.subplots()
+
+    splot = sns.barplot(x=summary_data['category'], y=summary_data['count'])
+
+    for p in splot.patches:
+        splot.annotate(format(p.get_height(), '.0f'),
+                  (p.get_x() + p.get_width() / 2., p.get_height()),
+                  ha = 'center', va = 'center',
+                  xytext = (0, 10), textcoords = 'offset points')
+
+    plt.tight_layout
+    plt.xlabel('')
+    plt.ylabel('number of countries')
+    plt.title(variable)
+
+    if save_plot:
+        filepath = os.path.join('output', 'plots')
+        fname = ('peaking-categories-' + variable + '.png')
+        if not os.path.exists(filepath):
+            os.makedirs(filepath)
+        filename = os.path.join(filepath, fname)
+        plt.savefig(filename, format='png', dpi=600, bbox_inches='tight')
+        plt.close()
+

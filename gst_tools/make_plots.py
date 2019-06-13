@@ -233,14 +233,14 @@ def make_histogram(df, unit_,
         nbelow = len(df[df < 0])
         nabove = len(df[df > 0])
 
-        axs.annotate(str(nbelow),
+        axs.annotate([str(nbelow) + ' countries'],
                      xytext=(0.42, 1.0), xycoords=axs.transAxes,
                      fontsize=9, color='black',
                      xy=(0.3, 1.01),
                      arrowprops=dict(arrowstyle="-|>", color='black'),
                      bbox=dict(facecolor='white', edgecolor='grey', alpha=0.75)
                      )
-        axs.annotate(str(nabove),
+        axs.annotate([str(nabove) + ' coutnries'],
                      xytext=(0.55, 1.0), xycoords=axs.transAxes,
                      fontsize=9, color='black',
                      xy=(0.7, 1.01),

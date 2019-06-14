@@ -2,12 +2,10 @@
 
 # Author(s): Louise Jeffery
 # Contact: louise.jeffery@pik-potsdam.de; mlouise@posteo.de 
-# Date: **MONTH, YYYY**
+# Last updated: June, 2019
 
-# Copyright License:
-# 
 
-# Purpose:
+# Purpose: Make distribution plots for indicators of global progress
 # 
 
 # =====================================================
@@ -233,17 +231,17 @@ def make_histogram(df, unit_,
         nbelow = len(df[df < 0])
         nabove = len(df[df > 0])
 
-        axs.annotate([str(nbelow) + ' countries'],
-                     xytext=(0.42, 1.0), xycoords=axs.transAxes,
+        axs.annotate(str(nbelow) + ' countries',
+                     xytext=(0.31, 1.0), xycoords=axs.transAxes,
                      fontsize=9, color='black',
-                     xy=(0.3, 1.01),
+                     xy=(0.15, 1.01),
                      arrowprops=dict(arrowstyle="-|>", color='black'),
                      bbox=dict(facecolor='white', edgecolor='grey', alpha=0.75)
                      )
-        axs.annotate([str(nabove) + ' coutnries'],
-                     xytext=(0.55, 1.0), xycoords=axs.transAxes,
+        axs.annotate(str(nabove) + ' countries',
+                     xytext=(0.54, 1.0), xycoords=axs.transAxes,
                      fontsize=9, color='black',
-                     xy=(0.7, 1.01),
+                     xy=(0.85, 1.01),
                      arrowprops=dict(arrowstyle="-|>", color='black'),
                      bbox=dict(facecolor='white', edgecolor='grey', alpha=0.75)
                      )
@@ -293,7 +291,7 @@ def make_histogram(df, unit_,
                      fontsize=8, color='black')
 
     # label axes and add title
-    axs.set_xlabel((xlabel + ' (' + unit_ + ')'), fontsize=12)
+    axs.set_xlabel((xlabel + ' \n(' + unit_ + ')'), fontsize=12)
     axs.set_ylabel('number of countries', fontsize=12)
     axs.set_title((title + "\n"), fontweight='bold')
 
@@ -458,7 +456,7 @@ def plot_facet_grid_countries(df, variable, value, main_title='', plot_name='', 
         plt.close()
 
 
-def peaking_barplot(summary_data, variable, save_plot=False):
+def peaking_barplot(summary_data, variable, max_year, save_plot=False):
 
     uba_palette = set_uba_palette()
     sns.set_palette(uba_palette)
@@ -478,7 +476,7 @@ def peaking_barplot(summary_data, variable, save_plot=False):
     plt.tight_layout
     plt.xlabel('')
     plt.ylabel('number of countries')
-    plt.title(variable)
+    plt.title("Status of " + variable + "\nin " + max_year)
 
     if save_plot:
         filepath = os.path.join('output', 'plots')

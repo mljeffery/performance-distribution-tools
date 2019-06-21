@@ -78,14 +78,14 @@ def make_histogram(df, unit_,
     available, including the max and min of the data and the number of data points.
     For most plots we are expecting around 200 countries, but could also be a few regions.
 
-    TODO - the 'outlier' calculation is helpful to see some data better BUT need to be careful.
-    Proposed solution is to make BOTH plots so that it's clear to the user when data has been
-    removed.
-
     TODO - 'df' is actually a series -> better name?
-
     TODO - edit selected country option to deal with ISO codes or names.
     """
+
+    # announce the plot..
+    print('---------')
+    print('Making  ' + str(plot_name) + ' plot.')
+    print('---------')
 
     # Check the data - needs to not be, for example, all zeros
     if len(df.unique()) == 1:

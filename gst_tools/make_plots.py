@@ -29,16 +29,18 @@ def get_uba_colours():
 
     # UBA dict from Annika Guenther
     uba_colours = {}
+    uba_colours['uba_bright_green'] = [xx / 255 for xx in (94, 173, 53)]
     uba_colours['uba_dark_green'] = [xx / 255 for xx in (0, 118, 38)]
-    uba_colours['uba_bright_green'] = [xx / 255 for xx in (97, 185, 49)]
     uba_colours['uba_bright_blue'] = [xx / 255 for xx in (0, 155, 213)]
-    uba_colours['uba_dark_blue'] = [xx / 255 for xx in (18, 93, 134)]
+    uba_colours['uba_dark_blue'] = [xx / 255 for xx in (0, 95, 133)]
     uba_colours['uba_bright_orange'] = [xx / 255 for xx in (250, 187, 0)]
-    uba_colours['uba_dark_pink'] = [xx / 255 for xx in (131, 5, 60)]
-    uba_colours['uba_bright_pink'] = [xx / 255 for xx in (206, 31, 94)]
     uba_colours['uba_dark_orange'] = [xx / 255 for xx in (215, 132, 0)]
+    uba_colours['uba_bright_pink'] = [xx / 255 for xx in (206, 31, 94)]
+    uba_colours['uba_dark_pink'] = [xx / 255 for xx in (131, 5, 60)]
     uba_colours['uba_bright_purple'] = [xx / 255 for xx in (157, 87, 154)]
     uba_colours['uba_dark_purple'] = [xx / 255 for xx in (98, 47, 99)]
+    uba_colours['uba_bright_grey'] = [xx / 255 for xx in (240, 241, 241)]
+    uba_colours['uba_dark_grey'] = [xx / 255 for xx in (75, 75, 55)]
 
     return uba_colours
 
@@ -55,7 +57,9 @@ def set_uba_palette():
                 [xx / 255 for xx in (0, 155, 213)],
                 [xx / 255 for xx in (157, 87, 154)],
                 [xx / 255 for xx in (250, 187, 0)],
-                [xx / 255 for xx in (206, 31, 94)]
+                [xx / 255 for xx in (206, 31, 94)],
+                [xx / 255 for xx in (240, 241, 241)],
+                [xx / 255 for xx in (75, 75, 55)]
                   ]
 
     return uba_palette
@@ -102,6 +106,7 @@ def make_histogram(df, unit_,
     # set a style
     sns.set(style="darkgrid")
     sns.set_palette(set_uba_palette())
+    uba_colours = get_uba_colours()
 
     if remove_outliers:
         # Outliers - in some cases, the date contains extreme outliers. These make for an unreadable
@@ -205,7 +210,8 @@ def make_histogram(df, unit_,
     # make histogram
     sns.distplot(df,
                  kde=False,
-                 bins=bins_calc)
+                 bins=bins_calc,
+                 hist_kws=dict(alpha=0.75))
                  #color='mediumseagreen',
                  #rug=False,
                  #rug_kws={"color": "rebeccapurple", "alpha": 0.7, "linewidth": 0.4, "height": 0.03})
@@ -254,22 +260,22 @@ def make_histogram(df, unit_,
 
         if (country_value > xmin) & (country_value < xmax):
             # indicate it on the plot
-            axs.axvline(x=country_value, ymax=0.9, linewidth=1.5, color='rebeccapurple')
+            axs.axvline(x=country_value, ymax=0.9, linewidth=1.5, color=uba_colours['uba_dark_purple'])
 
             # annotate with country name
             ymin, ymax = axs.get_ylim()
             ypos = 0.65 * ymax
             axs.annotate((to_name(selected_country) + ' ' + "\n{:.2g}".format(country_value)) + unit_,
                          xy=(country_value, ypos), xycoords='data',
-                         fontsize=9, color='rebeccapurple',
-                         bbox=dict(facecolor='white', edgecolor='rebeccapurple', alpha=0.75)
+                         fontsize=9, color=uba_colours['uba_dark_purple'],
+                         bbox=dict(facecolor='white', edgecolor=uba_colours['uba_dark_purple'], alpha=0.75)
                          )
 
         else:
             axs.annotate((to_name(selected_country) + ' ' + "\n{:.2g}".format(country_value)) + unit_,
                          xy=(.75, .65), xycoords=axs.transAxes,
-                         fontsize=9, color='rebeccapurple',
-                         bbox=dict(facecolor='white', edgecolor='rebeccapurple', alpha=0.75)
+                         fontsize=9, color=uba_colours['uba_dark_purple'],
+                         bbox=dict(facecolor='white', edgecolor=uba_colours['uba_dark_purple'], alpha=0.75)
                          )
 
     # Annotate the plot with stats
@@ -319,6 +325,10 @@ def make_histogram_peaking(df, var, unit_, start_year, end_year, save_plot=False
     of countries.
     """
 
+    uba_palette = set_uba_palette()
+    sns.set_palette(uba_palette)
+    sns.set(style="darkgrid", context="paper")
+
     # Check the data - needs to not be, for example, all zeros
     if len(df.unique()) == 1:
         print('---------')
@@ -356,7 +366,7 @@ def make_histogram_peaking(df, var, unit_, start_year, end_year, save_plot=False
     for i in range(0, len(patches)):
         patches[i].set_facecolor(uba_colours['uba_dark_purple'])
     patches[-1].set_facecolor(uba_colours['uba_bright_orange'])
-    patches[-1].set_alpha(0.4)
+    patches[-1].set_alpha(0.5)
 
     # Dynamically set x axis range to make symmetric abut 0
     if minimum < 0:
@@ -407,6 +417,11 @@ def plot_facet_grid_countries(df, variable, value, main_title='', plot_name='', 
     which countries have emissions that have peaked, and which not.
     """
 
+    uba_palette = set_uba_palette()
+    sns.set_palette(uba_palette)
+    sns.set(style="darkgrid", context="paper")
+    uba_colours = get_uba_colours()
+
     # First, get some idea of the data so that it's easier to make clean plots
     ranges = df.max(axis=1) - df.min(axis=1)
     check = (ranges.max() - ranges.min()) / ranges.min()
@@ -427,7 +442,7 @@ def plot_facet_grid_countries(df, variable, value, main_title='', plot_name='', 
                          col_wrap=4, aspect=1)
 
     # make the actual plots
-    grid.map(sns.lineplot, variable, value, color="rebeccapurple")
+    grid.map(sns.lineplot, variable, value, color=uba_colours['uba_dark_purple'])
 
     # Give subplots nice titles
     grid.set_titles(col_template='{col_name}')
@@ -465,13 +480,14 @@ def peaking_barplot(summary_data, variable, max_year, save_plot=False):
     # make histogram
     fig, ax = plt.subplots()
 
-    splot = sns.barplot(x=summary_data['category'], y=summary_data['count'])
+    splot= sns.barplot(x=summary_data['category'], y=summary_data['count'],
+                       alpha=0.85, palette=uba_palette)
 
     for p in splot.patches:
         splot.annotate(format(p.get_height(), '.0f'),
                   (p.get_x() + p.get_width() / 2., p.get_height()),
-                  ha = 'center', va = 'center',
-                  xytext = (0, 10), textcoords = 'offset points')
+                  ha='center', va='center',
+                  xytext=(0, 10), textcoords='offset points')
 
     plt.tight_layout
     plt.xlabel('')

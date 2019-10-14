@@ -214,5 +214,4 @@ for selected_country in countries_of_interest:
         
     else:
         print('sorry, ' + selected_country + ' is not available.')
-    
 

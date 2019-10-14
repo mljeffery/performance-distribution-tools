@@ -1,8 +1,8 @@
 # Project and Title
 
 # Author(s): Louise Jeffery
-# Contact: louise.jeffery@pik-potsdam.de; mlouise@posteo.de 
-# Date: April, 2019
+# Contact: louise.jeffery@pik-potsdam.de; l.jeffery@newlcimate.org
+# Date: 2019
 
 # Copyright License:
 # 
@@ -329,3 +329,22 @@ def make_uba_color_dict():
     uba_colours['uba_10'] = [xx / 255 for xx in (98, 47, 99)]  # 'magenta'
 
     return uba_colours
+
+
+def convert_ISO2_to_ISO3():
+
+    """
+    convert a country 2-letter ISO code to a 3-letter ISO code.
+    """
+
+    country_code_file = "country_codes.csv"
+    country_codes = pd.read_csv(country_code_file)
+
+
+
+
+def convert_ISO3_to_name():
+
+    """
+    convert a 3-letter ISO code to a full country name
+    """

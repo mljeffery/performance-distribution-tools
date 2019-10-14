@@ -66,6 +66,7 @@ def set_uba_palette():
 
 # main plotting function used throughout - flexibility given so that it can cope with a range of different input!
 
+
 def make_histogram(df, unit_,
                    xlabel='', title='', sourcename='unspecified',
                    remove_outliers=False, ktuk=3,
@@ -104,9 +105,12 @@ def make_histogram(df, unit_,
         country_value = df[selected_country]
 
     # set a style
-    sns.set(style="darkgrid")
+    # attempting to modify to UBA grid style but didn't work.
+    #sns.set_style('darkgrid', {'xtick.color': '.95', 'grid.color': '.5'})
+    sns.set(style='darkgrid')
     sns.set_palette(set_uba_palette())
     uba_colours = get_uba_colours()
+    sns.set(font="Calibri")
 
     if remove_outliers:
         # Outliers - in some cases, the date contains extreme outliers. These make for an unreadable
@@ -211,8 +215,8 @@ def make_histogram(df, unit_,
     sns.distplot(df,
                  kde=False,
                  bins=bins_calc,
-                 hist_kws=dict(alpha=0.75))
-                 #color='mediumseagreen',
+                 hist_kws=dict(alpha=0.75),
+                 color=uba_colours['uba_dark_green'])
                  #rug=False,
                  #rug_kws={"color": "rebeccapurple", "alpha": 0.7, "linewidth": 0.4, "height": 0.03})
 
@@ -328,6 +332,7 @@ def make_histogram_peaking(df, var, unit_, start_year, end_year, save_plot=False
     uba_palette = set_uba_palette()
     sns.set_palette(uba_palette)
     sns.set(style="darkgrid", context="paper")
+    sns.set(font="Calibri")
 
     # Check the data - needs to not be, for example, all zeros
     if len(df.unique()) == 1:
@@ -421,6 +426,7 @@ def plot_facet_grid_countries(df, variable, value, main_title='', plot_name='', 
     sns.set_palette(uba_palette)
     sns.set(style="darkgrid", context="paper")
     uba_colours = get_uba_colours()
+    sns.set(font="Calibri")
 
     # First, get some idea of the data so that it's easier to make clean plots
     ranges = df.max(axis=1) - df.min(axis=1)
@@ -476,6 +482,7 @@ def peaking_barplot(summary_data, variable, max_year, save_plot=False):
     uba_palette = set_uba_palette()
     sns.set_palette(uba_palette)
     sns.set(style="darkgrid", context="paper")
+    sns.set(font="Calibri")
 
     # make histogram
     fig, ax = plt.subplots()

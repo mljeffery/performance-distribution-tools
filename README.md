@@ -19,6 +19,11 @@ The analysis can all be run using Jupyter notebooks that use the gst_tools code.
 
 Python package requirements can be found in requirements.txt.
 
+Some tips...
+Country converter tool used to convert country names to ISO codes is: 
+https://pypi.org/project/country_converter/
+```conda install -c konstantinstadler country_converter```
+
 
 ## Toolbox Description
 

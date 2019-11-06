@@ -269,14 +269,14 @@ def make_histogram(df, unit_,
             # annotate with country name
             ymin, ymax = axs.get_ylim()
             ypos = 0.65 * ymax
-            axs.annotate((to_name(selected_country) + ' ' + "\n{:.2g}".format(country_value)) + unit_,
+            axs.annotate((to_name(selected_country) + ' ' + "\n{:.2g}".format(country_value)) + ' ' + unit_,
                          xy=(country_value, ypos), xycoords='data',
                          fontsize=9, color=uba_colours['uba_dark_purple'],
                          bbox=dict(facecolor='white', edgecolor=uba_colours['uba_dark_purple'], alpha=0.75)
                          )
 
         else:
-            axs.annotate((to_name(selected_country) + ' ' + "\n{:.2g}".format(country_value)) + unit_,
+            axs.annotate((to_name(selected_country) + ' ' + "\n{:.2g}".format(country_value)) + ' ' + unit_,
                          xy=(.75, .65), xycoords=axs.transAxes,
                          fontsize=9, color=uba_colours['uba_dark_purple'],
                          bbox=dict(facecolor='white', edgecolor=uba_colours['uba_dark_purple'], alpha=0.75)

@@ -6,9 +6,9 @@ output/*
 
 # Data files
 input-data/*
-!input_data/availability/
-!input_data/example_data.csv
+!input-data/availability/
 proc-data/*
+!proc-data/example-data/
 
 
 # Byte-compiled / optimized / DLL files

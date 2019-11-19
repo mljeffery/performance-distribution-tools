@@ -1,19 +1,20 @@
 # Data preparation 
 
 Author: Louise Jeffery, March 2019
+Last Updated: November, 2019
 
 Content: Notes on code and options taken for data preparation.
 
 ## PRIMAP-hist
 
-One of the key datasets is PRIMAP-hist. As this could be updated multiple times, I use the dataset available online and write a preparation script that can be used by others to get the desired data in the right format. 
+One of the key datasets for the perfomrnace distribution tools is [PRIMAP-hist](www.pik-potsdam.de/paris-reality-check/primap-hist/). As this dataset could be updated multiple times, we suggest that users download the latest version of the dataset available online. The notebooks provided with this package can be used to extract the desired data and put it in the correct format. 
 
 
 ### countrygroups
 
-Robert's countrygroups module is useful for reducing the country list to UNFCCC members only. It's a bit awkward to access the lists, but if focussing on only a few options it works okay. 
+The countrygroups module from open_climate_data is a useful tool for reducing the country list to UNFCCC members only.
 
-Some useful code snippets for future reference...
+Some useful code snippets for reference are
 
 ``` python
 
@@ -25,24 +26,19 @@ dir(countrygroups)
 
 ```
 
-A dependency of countrygrouops is 'shortcountrynames which contains a mapping for ISO codes to longer countrynames. Could be useful!
+A dependency of countrygrouops is 'shortcountrynames which contains a mapping for ISO codes to longer countrynames. 
 
 ```python
 [In]  : shortcountrynames.to_name('AFG')
 [Out] : 'Afghanistan'
 ```
 
+# Alternative datasets
 
-## EIA
+There are many different data sources that could be used with the performance distribution tools. We do not provide them here because we think that it's improtant that the users (1) Know where the original data is from, and (2) have the most up to date versions of the data. 
 
-Data from the US' Energy Information Administration is made available for plotting using the global-stocktake-tools. 
+We acknowledge that this implies additional work in data processing. To make it a bit easier, we provide an example data output and endeavour to keep the work minimal. 
 
-Data can be downloaded in a .csv format from the [EIA website](https://www.eia.gov/beta/international/data/browser/#/?pa=004000001000000000000000000000000000000000000000000000000fu&c=ruvvvvvfvtvnvv1urvvvvfvvvvvvfvvvou20evvvvvvvvvnvvuvs&ct=0&vs=INTL.44-1-AFG-QBTU.A&cy=2016&vo=0&v=H&end=2017) as a .csv file. 
+A key challenge with country data is in converting inconsistent names to country codes. Some tools are available to do this, but not all work on all platforms. 
 
-To make it easier for the user, we have already performed some pre-processing to put the data in the correct format for the tools provided here. More specifically, we have:
-
-* rearranged the data so that it can be read in with separate energy and sector headings
-* removed the undefined and sparse values for 2017
-* replaced the '--' and '(s)' values in the original data with nan
-* removed some of the commas in the country names so that the data can be stored and read-in automatically as a comma separated file.
-* 
+If you have further suggestions to improve this aspect of the code, please contribute an edit or open an issue on github. 
